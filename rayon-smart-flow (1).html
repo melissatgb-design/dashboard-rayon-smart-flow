@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rayon Smart Flow — PROSUMA</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #003B8E;
+  --blue-mid: #004aad;
+  --blue-light: #e6f1fb;
+  --yellow: #F5C518;
+  --yellow-dark: #c9a010;
+  --red: #e24b4a;
+  --red-light: #fcebeb;
+  --orange: #ef9f27;
+  --orange-light: #faeeda;
+  --green: #4ade80;
+  --green-dark: #3b6d11;
+  --green-light: #eaf3de;
+  --bg: #f4f6fa;
+  --surface: #ffffff;
+  --surface2: #f0f3f8;
+  --border: rgba(0,59,142,0.12);
+  --text: #0d1b2a;
+  --text2: #4a5a72;
+  --text3: #8a97aa;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ─── SIDEBAR ─── */
+.sidebar {
+  width: 220px;
+  background: var(--blue);
+  min-height: 100vh;
+  position: fixed;
+  left: 0; top: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+}
+
+.sidebar-logo {
+  padding: 20px 18px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.logo-badge {
+  width: 38px; height: 38px;
+  background: var(--yellow);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 600; font-size: 13px; color: var(--blue);
+  margin-bottom: 10px;
+}
+
+.logo-name { color: #fff; font-size: 14px; font-weight: 600; }
+.logo-sub { color: var(--yellow); font-size: 10px; margin-top: 2px; }
+
+.sidebar-nav { padding: 14px 10px; flex: 1; }
+
+.nav-section { font-size: 10px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: .08em; padding: 0 8px; margin: 12px 0 6px; }
+
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: rgba(255,255,255,0.65);
+  font-size: 13px;
+  transition: all 0.15s;
+  margin-bottom: 2px;
+  border: none; background: transparent; width: 100%; text-align: left;
+}
+
+.nav-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
+.nav-item.active { background: rgba(245,197,24,0.15); color: var(--yellow); }
+
+.nav-icon {
+  width: 18px; height: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+}
+
+.nav-badge {
+  margin-left: auto;
+  background: var(--red);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+
+.nav-badge-y {
+  margin-left: auto;
+  background: rgba(245,197,24,0.25);
+  color: var(--yellow);
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+
+.sidebar-bottom {
+  padding: 14px 10px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.user-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+}
+
+.user-avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--yellow);
+  color: var(--blue);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600;
+}
+
+.user-name { color: #fff; font-size: 12px; }
+.user-role { color: rgba(255,255,255,0.5); font-size: 10px; }
+
+/* ─── MAIN ─── */
+.main { margin-left: 220px; min-height: 100vh; }
+
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 50;
+}
+
+.topbar-left { display: flex; align-items: center; gap: 14px; }
+.page-title { font-size: 15px; font-weight: 600; color: var(--text); }
+.breadcrumb { font-size: 12px; color: var(--text3); }
+
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+
+.status-pill {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--green-light);
+  color: var(--green-dark);
+  font-size: 11px; font-weight: 500;
+  padding: 5px 12px;
+  border-radius: 20px;
+}
+
+.status-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: #4ade80;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+.date-chip {
+  background: var(--surface2);
+  color: var(--text2);
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-family: 'DM Mono', monospace;
+}
+
+.btn-upload {
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: background 0.15s;
+}
+.btn-upload:hover { background: var(--blue-mid); }
+
+/* ─── CONTENT ─── */
+.content { padding: 22px 24px; }
+.section { display: none; }
+.section.active { display: block; }
+
+/* ─── KPI ROW ─── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.kpi-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.15s;
+  cursor: default;
+}
+
+.kpi-card:hover { transform: translateY(-2px); }
+
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 3px;
+}
+
+.kpi-card.blue::before { background: var(--blue); }
+.kpi-card.red::before { background: var(--red); }
+.kpi-card.yellow::before { background: var(--yellow); }
+.kpi-card.green::before { background: #4ade80; }
+
+.kpi-label { font-size: 11px; color: var(--text3); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .04em; }
+.kpi-value { font-size: 26px; font-weight: 600; color: var(--text); line-height: 1; }
+.kpi-sub { font-size: 11px; color: var(--text3); margin-top: 5px; }
+.kpi-icon { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 28px; opacity: 0.08; }
+
+/* ─── GRID ─── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.grid-3 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 16px; }
+
+/* ─── CARDS ─── */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.card-title { font-size: 13px; font-weight: 600; color: var(--text); }
+.card-body { padding: 14px 18px; }
+
+/* ─── BADGES ─── */
+.badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 10px;
+  display: inline-block;
+}
+
+.badge-red { background: var(--red-light); color: #a32d2d; }
+.badge-yellow { background: var(--orange-light); color: #7a4800; }
+.badge-green { background: var(--green-light); color: var(--green-dark); }
+.badge-blue { background: var(--blue-light); color: #0c447c; }
+
+/* ─── STOCK BARS ─── */
+.stock-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+.stock-item:last-child { border-bottom: none; }
+.stock-name { flex: 1; color: var(--text2); }
+.stock-track { width: 90px; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+.stock-fill { height: 6px; border-radius: 3px; transition: width 0.6s; }
+.fill-ok { background: #4ade80; }
+.fill-low { background: var(--yellow); }
+.fill-crit { background: var(--red); }
+.stock-pct { font-size: 11px; font-weight: 600; color: var(--text2); min-width: 32px; text-align: right; }
+
+/* ─── ALERTS ─── */
+.alert-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.alert-item:last-child { border-bottom: none; }
+
+.alert-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  flex-shrink: 0; margin-top: 4px;
+}
+.dot-red { background: var(--red); }
+.dot-orange { background: var(--orange); }
+.dot-yellow { background: var(--yellow); }
+
+.alert-text { font-size: 12px; color: var(--text); flex: 1; }
+.alert-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.alert-time { font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace; }
+
+/* ─── TABLE ─── */
+.data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.data-table th {
+  background: var(--surface2);
+  padding: 9px 14px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 11px;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  border-bottom: 1px solid var(--border);
+}
+.data-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  vertical-align: middle;
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--surface2); }
+
+/* ─── PROGRESS RING ─── */
+.ring-wrap { display: flex; align-items: center; gap: 14px; padding: 8px 0; }
+.ring-svg { flex-shrink: 0; }
+.ring-label { font-size: 12px; color: var(--text2); }
+.ring-val { font-size: 16px; font-weight: 600; color: var(--text); }
+
+/* ─── CHAT ─── */
+.chat-area {
+  background: var(--surface2);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  max-height: 220px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+
+.chat-msg { margin-bottom: 10px; }
+.chat-msg.user { text-align: right; }
+
+.chat-bubble {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 14px;
+  font-size: 12px;
+  max-width: 80%;
+  text-align: left;
+}
+
+.bubble-bot { background: var(--blue-light); color: #0c447c; border-radius: 4px 14px 14px 14px; }
+.bubble-user { background: var(--blue); color: #fff; border-radius: 14px 4px 14px 14px; }
+.chat-from { font-size: 10px; color: var(--text3); margin-bottom: 3px; }
+
+.chat-row { display: flex; gap: 8px; }
+.chat-input-box {
+  flex: 1;
+  padding: 9px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+  transition: border 0.15s;
+}
+.chat-input-box:focus { border-color: var(--blue); }
+.btn-send {
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 9px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  white-space: nowrap;
+}
+.btn-send:hover { background: var(--blue-mid); }
+
+.quick-btns { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.qbtn {
+  font-size: 11px;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  cursor: pointer;
+  color: var(--text2);
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.15s;
+}
+.qbtn:hover { background: var(--blue-light); color: var(--blue); border-color: var(--blue); }
+
+/* ─── UPLOAD ZONE ─── */
+.upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 30px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 14px;
+}
+.upload-zone:hover { border-color: var(--blue); background: var(--blue-light); }
+.upload-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+.upload-sub { font-size: 12px; color: var(--text3); }
+
+/* ─── REPORT ─── */
+.report-header {
+  background: var(--blue);
+  border-radius: var(--radius) var(--radius) 0 0;
+  padding: 16px 20px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.report-header-title { color: #fff; font-size: 14px; font-weight: 600; }
+.report-header-sub { color: rgba(255,255,255,0.6); font-size: 11px; margin-top: 2px; }
+.report-header-val { color: var(--yellow); font-size: 22px; font-weight: 700; }
+.report-header-obj { color: rgba(255,255,255,0.6); font-size: 11px; text-align: right; }
+.report-body { background: var(--surface); border-radius: 0 0 var(--radius) var(--radius); border: 1px solid var(--border); border-top: none; padding: 16px; }
+.report-section { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; margin: 14px 0 8px; }
+
+/* ─── WA PREVIEW ─── */
+.wa-box {
+  background: #dcf8c6;
+  border-radius: var(--radius);
+  padding: 14px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: #1a5c0a;
+  line-height: 1.8;
+  border-left: 4px solid #25d366;
+  margin-top: 12px;
+}
+
+/* ─── LOADING ─── */
+.loading-bar { height: 3px; background: var(--yellow); border-radius: 2px; animation: load 1.5s ease-in-out infinite; }
+@keyframes load { 0%{width:0} 60%{width:80%} 100%{width:100%} }
+
+/* ─── BUTTONS ─── */
+.btn-yellow {
+  background: var(--yellow); color: var(--blue);
+  border: none; border-radius: var(--radius-sm);
+  padding: 9px 16px; font-size: 12px; font-weight: 600;
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  transition: background 0.15s;
+}
+.btn-yellow:hover { background: var(--yellow-dark); }
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+.btn-ghost {
+  background: transparent; color: var(--text2);
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 9px 16px; font-size: 12px; font-weight: 500;
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  transition: all 0.15s;
+}
+.btn-ghost:hover { background: var(--surface2); }
+
+/* ─── DLC TABLE ─── */
+.days-crit { color: #a32d2d; font-weight: 700; }
+.days-warn { color: #7a4800; font-weight: 600; }
+.days-ok { color: var(--green-dark); }
+
+.action-pill {
+  font-size: 10px; padding: 3px 9px; border-radius: 10px;
+  font-weight: 500; white-space: nowrap;
+}
+
+/* ─── ANIMATE IN ─── */
+@keyframes fadeUp {
+  from { opacity:0; transform: translateY(12px); }
+  to { opacity:1; transform: translateY(0); }
+}
+.animate-in { animation: fadeUp 0.25s ease forwards; }
+
+/* ─── MOBILE NAV ─── */
+.mobile-nav { display: none; }
+
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; }
+  .kpi-grid { grid-template-columns: 1fr 1fr; }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .mobile-nav {
+    display: flex;
+    background: var(--blue);
+    overflow-x: auto;
+    padding: 8px 12px;
+    gap: 6px;
+  }
+  .mobile-btn {
+    background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8);
+    border: none; border-radius: 20px; padding: 7px 14px;
+    font-size: 12px; cursor: pointer; white-space: nowrap;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .mobile-btn.active { background: var(--yellow); color: var(--blue); font-weight: 600; }
+}
+
+.indicator { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-badge">RSF</div>
+    <div class="logo-name">Rayon Smart Flow</div>
+    <div class="logo-sub">PROSUMA — Abidjan</div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section">Principal</div>
+    <button class="nav-item active" onclick="showSection('dashboard')">
+      <span class="nav-icon">◼</span> Tableau de bord
+    </button>
+    <button class="nav-item" onclick="showSection('inventaire')">
+      <span class="nav-icon">▦</span> Inventaire & IA
+    </button>
+    <button class="nav-item" onclick="showSection('alertes')">
+      <span class="nav-icon">⬡</span> Alertes DLC
+      <span class="nav-badge">5</span>
+    </button>
+    <button class="nav-item" onclick="showSection('commandes')">
+      <span class="nav-icon">◈</span> Commandes
+      <span class="nav-badge-y">3</span>
+    </button>
+
+    <div class="nav-section">Rapports</div>
+    <button class="nav-item" onclick="showSection('rapport')">
+      <span class="nav-icon">◧</span> Fiche CA journalier
+    </button>
+    <button class="nav-item" onclick="showSection('demarque')">
+      <span class="nav-icon">◫</span> Démarque
+    </button>
+
+    <div class="nav-section">IA</div>
+    <button class="nav-item" onclick="showSection('agent')">
+      <span class="nav-icon">◎</span> Agent Claude
+    </button>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <div class="user-row">
+      <div class="user-avatar">AK</div>
+      <div>
+        <div class="user-name">Aya Kouassi</div>
+        <div class="user-role">Chef de rayon</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav">
+  <button class="mobile-btn active" onclick="showSection('dashboard')">Dashboard</button>
+  <button class="mobile-btn" onclick="showSection('inventaire')">Inventaire</button>
+  <button class="mobile-btn" onclick="showSection('alertes')">Alertes</button>
+  <button class="mobile-btn" onclick="showSection('rapport')">CA</button>
+  <button class="mobile-btn" onclick="showSection('agent')">IA Agent</button>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div>
+        <div class="page-title" id="page-title">Tableau de bord</div>
+        <div class="breadcrumb">PROSUMA Abidjan · Samedi 19 avr. 2026</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="status-pill"><div class="status-dot"></div> IA connectée</div>
+      <div class="date-chip">19/04/2026 · 09:42</div>
+      <button class="btn-upload" onclick="showSection('inventaire')">+ Importer</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ══════════════ DASHBOARD ══════════════ -->
+    <div class="section active animate-in" id="section-dashboard">
+
+      <div class="kpi-grid">
+        <div class="kpi-card blue">
+          <div class="kpi-icon">▦</div>
+          <div class="kpi-label">Références en stock</div>
+          <div class="kpi-value">1 284</div>
+          <div class="kpi-sub">+12 depuis hier</div>
+        </div>
+        <div class="kpi-card red">
+          <div class="kpi-icon">⚡</div>
+          <div class="kpi-label">Ruptures critiques</div>
+          <div class="kpi-value">7</div>
+          <div class="kpi-sub">dont 3 produits frais</div>
+        </div>
+        <div class="kpi-card yellow">
+          <div class="kpi-icon">⏱</div>
+          <div class="kpi-label">DLC à risque (72h)</div>
+          <div class="kpi-value">23</div>
+          <div class="kpi-sub">Boucherie & crémerie</div>
+        </div>
+        <div class="kpi-card green">
+          <div class="kpi-icon">◈</div>
+          <div class="kpi-label">CA du jour (FCFA)</div>
+          <div class="kpi-value">2,4M</div>
+          <div class="kpi-sub">Objectif 2,8M · 87%</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Alertes prioritaires</span>
+            <span class="badge badge-red">7 urgentes</span>
+          </div>
+          <div class="card-body">
+            <div class="alert-item">
+              <div class="alert-dot dot-red"></div>
+              <div class="alert-text">
+                <div>Poisson fumé — Rupture totale</div>
+                <div class="alert-sub">Fraîche · Commander 40 kg · Fournisseur Yopougon</div>
+              </div>
+              <div class="alert-time">09:12</div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-dot dot-red"></div>
+              <div class="alert-text">
+                <div>Poulet entier — DLC dans 24h (12 u.)</div>
+                <div class="alert-sub">Boucherie · Démarquer -40% avant midi</div>
+              </div>
+              <div class="alert-time">08:55</div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-dot dot-orange"></div>
+              <div class="alert-text">
+                <div>Yaourt Sania — DLC dans 48h (34 u.)</div>
+                <div class="alert-sub">Crémerie · Promotion conseillée -30%</div>
+              </div>
+              <div class="alert-time">08:30</div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-dot dot-orange"></div>
+              <div class="alert-text">
+                <div>Banane plantain — Stock critique (8 régimes)</div>
+                <div class="alert-sub">Produits locaux · Délai fournisseur 2j</div>
+              </div>
+              <div class="alert-time">08:15</div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-dot dot-yellow"></div>
+              <div class="alert-text">
+                <div>Risque délestage ce soir 18h–22h</div>
+                <div class="alert-sub">Vider les frais réfrigérés avant 17h30</div>
+              </div>
+              <div class="alert-time">Météo IA</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Niveaux par famille</span>
+            <span class="badge badge-blue">Aujourd'hui</span>
+          </div>
+          <div class="card-body">
+            <div class="stock-item">
+              <span class="stock-name">Épicerie sèche</span>
+              <div class="stock-track"><div class="stock-fill fill-ok" style="width:82%"></div></div>
+              <span class="stock-pct">82%</span>
+            </div>
+            <div class="stock-item">
+              <span class="stock-name">Produits frais</span>
+              <div class="stock-track"><div class="stock-fill fill-crit" style="width:18%"></div></div>
+              <span class="stock-pct" style="color:var(--red)">18%</span>
+            </div>
+            <div class="stock-item">
+              <span class="stock-name">Boucherie</span>
+              <div class="stock-track"><div class="stock-fill fill-low" style="width:48%"></div></div>
+              <span class="stock-pct">48%</span>
+            </div>
+            <div class="stock-item">
+              <span class="stock-name">Boissons</span>
+              <div class="stock-track"><div class="stock-fill fill-ok" style="width:75%"></div></div>
+              <span class="stock-pct">75%</span>
+            </div>
+            <div class="stock-item">
+              <span class="stock-name">Produits locaux</span>
+              <div class="stock-track"><div class="stock-fill fill-crit" style="width:18%"></div></div>
+              <span class="stock-pct" style="color:var(--red)">18%</span>
+            </div>
+            <div class="stock-item">
+              <span class="stock-name">Hygiène / Beauté</span>
+              <div class="stock-track"><div class="stock-fill fill-ok" style="width:90%"></div></div>
+              <span class="stock-pct">90%</span>
+            </div>
+            <div class="stock-item">
+              <span class="stock-name">Crémerie</span>
+              <div class="stock-track"><div class="stock-fill fill-low" style="width:41%"></div></div>
+              <span class="stock-pct">41%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Suivi CA — Objectifs familles</span>
+            <span class="badge badge-blue">Samedi 19/04</span>
+          </div>
+          <div class="card-body">
+            <table class="data-table">
+              <thead>
+                <tr><th>Famille</th><th>CA (FCFA)</th><th>Obj.</th><th>Statut</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Épicerie sèche</td><td>680 000</td><td>102%</td><td><span class="badge badge-green">OK</span></td></tr>
+                <tr><td>Produits frais</td><td>420 000</td><td>75%</td><td><span class="badge badge-red">Faible</span></td></tr>
+                <tr><td>Boucherie</td><td>310 000</td><td>88%</td><td><span class="badge badge-yellow">Moyen</span></td></tr>
+                <tr><td>Boissons</td><td>390 000</td><td>98%</td><td><span class="badge badge-green">OK</span></td></tr>
+                <tr><td>Prod. locaux</td><td>180 000</td><td>64%</td><td><span class="badge badge-red">Faible</span></td></tr>
+                <tr><td>Hygiène</td><td>280 000</td><td>112%</td><td><span class="badge badge-green">Dépas.</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Contraintes CI</span>
+          </div>
+          <div class="card-body">
+            <div style="padding:10px;background:var(--red-light);border-radius:var(--radius-sm);margin-bottom:8px;border-left:3px solid var(--red);">
+              <div style="font-size:11px;font-weight:600;color:#a32d2d;">Délestage prévu</div>
+              <div style="font-size:11px;color:#a32d2d;margin-top:2px;">Ce soir 18h–22h · Vider frais avant 17h30</div>
+            </div>
+            <div style="padding:10px;background:var(--orange-light);border-radius:var(--radius-sm);margin-bottom:8px;border-left:3px solid var(--orange);">
+              <div style="font-size:11px;font-weight:600;color:#7a4800;">Pluies prévues</div>
+              <div style="font-size:11px;color:#7a4800;margin-top:2px;">Impact livraison manioc et plantain J+1</div>
+            </div>
+            <div style="padding:10px;background:var(--blue-light);border-radius:var(--radius-sm);border-left:3px solid var(--blue);">
+              <div style="font-size:11px;font-weight:600;color:#0c447c;">Fournisseur local</div>
+              <div style="font-size:11px;color:#0c447c;margin-top:2px;">Poisson fumé · Délai 48h · Yopougon</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ INVENTAIRE ══════════════ -->
+    <div class="section animate-in" id="section-inventaire">
+      <div class="grid-2" style="margin-bottom:16px;">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Importer un inventaire</span>
+          </div>
+          <div class="card-body">
+            <div class="upload-zone" onclick="simulateImport()">
+              <div style="font-size:32px;margin-bottom:8px;">📋</div>
+              <div class="upload-title">Glissez votre fichier ici</div>
+              <div class="upload-sub">Excel · Google Sheet · Photo · CSV caisse</div>
+            </div>
+            <div id="import-status" style="display:none;margin-bottom:10px;">
+              <div class="loading-bar" style="margin-bottom:8px;"></div>
+              <div style="font-size:12px;color:var(--text3);">Analyse IA en cours — Claude traite votre inventaire…</div>
+            </div>
+            <div class="btn-row">
+              <button class="btn-upload" onclick="simulateImport()">Importer fichier</button>
+              <button class="btn-yellow" onclick="simulateImport()">Analyser avec l'IA</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Dernier inventaire chargé</span>
+            <span class="badge badge-green">Analyse OK</span>
+          </div>
+          <div class="card-body">
+            <table class="data-table">
+              <thead><tr><th>Produit</th><th>Qté</th><th>DLC</th><th>Statut</th></tr></thead>
+              <tbody>
+                <tr><td>Poisson fumé</td><td style="color:var(--red);font-weight:700;">0</td><td>—</td><td><span class="badge badge-red">Rupture</span></td></tr>
+                <tr><td>Banane plantain</td><td>8 rég</td><td>—</td><td><span class="badge badge-yellow">Faible</span></td></tr>
+                <tr><td>Yaourt Sania</td><td>34</td><td>20/04</td><td><span class="badge badge-yellow">DLC J+2</span></td></tr>
+                <tr><td>Lait UHT</td><td>47</td><td>—</td><td><span class="badge badge-green">OK</span></td></tr>
+                <tr><td>Poulet entier</td><td>12</td><td>19/04</td><td><span class="badge badge-red">DLC J+1</span></td></tr>
+                <tr><td>Manioc</td><td>22 kg</td><td>—</td><td><span class="badge badge-yellow">Faible</span></td></tr>
+                <tr><td>Tilapia frais</td><td>5 kg</td><td>19/04</td><td><span class="badge badge-red">DLC J+1</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ ALERTES DLC ══════════════ -->
+    <div class="section animate-in" id="section-alertes">
+      <div class="card" style="margin-bottom:14px;">
+        <div class="card-header">
+          <span class="card-title">Alertes DLC / DLUO — Priorité fraîche & boucherie</span>
+          <span class="badge badge-red">5 urgentes</span>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <table class="data-table">
+            <thead>
+              <tr><th>Produit</th><th>Famille</th><th>Quantité</th><th>DLC</th><th>Jours rest.</th><th>Action IA</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Poulet entier réfrigéré</td><td>Boucherie</td><td>12 u.</td><td>19/04/2026</td>
+                <td><span class="days-crit">J+1 🔴</span></td>
+                <td><span class="action-pill badge-red badge">Démarquer -40%</span></td>
+              </tr>
+              <tr>
+                <td>Tilapia frais</td><td>Fraîche</td><td>5 kg</td><td>19/04/2026</td>
+                <td><span class="days-crit">J+1 🔴</span></td>
+                <td><span class="action-pill badge-red badge">Vendre ce matin</span></td>
+              </tr>
+              <tr>
+                <td>Yaourt nature Sania</td><td>Crémerie</td><td>34 u.</td><td>20/04/2026</td>
+                <td><span class="days-warn">J+2 ⚠</span></td>
+                <td><span class="action-pill badge-yellow badge">Promo -30%</span></td>
+              </tr>
+              <tr>
+                <td>Lait pasteurisé local</td><td>Fraîche</td><td>24 l.</td><td>20/04/2026</td>
+                <td><span class="days-warn">J+2 ⚠</span></td>
+                <td><span class="action-pill badge-yellow badge">Priorité vente matin</span></td>
+              </tr>
+              <tr>
+                <td>Fromage fondu Kiri</td><td>Crémerie</td><td>8 bts</td><td>21/04/2026</td>
+                <td><span class="days-warn">J+3 ⚠</span></td>
+                <td><span class="action-pill badge-yellow badge">Mise en avant</span></td>
+              </tr>
+              <tr>
+                <td>Tomates cerises</td><td>F&amp;L</td><td>6 barq.</td><td>22/04/2026</td>
+                <td><span class="days-ok">J+4</span></td>
+                <td><span class="action-pill badge-green badge">Rotation rayon</span></td>
+              </tr>
+              <tr>
+                <td>Beurre Présidente</td><td>Crémerie</td><td>18 u.</td><td>22/04/2026</td>
+                <td><span class="days-ok">J+4</span></td>
+                <td><span class="action-pill badge-green badge">Surveiller température</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div style="padding:12px 16px;background:var(--orange-light);border-radius:var(--radius);border-left:3px solid var(--yellow);">
+        <div style="font-size:12px;font-weight:600;color:#7a4800;margin-bottom:3px;">Alerte délestage — IA PROSUMA</div>
+        <div style="font-size:11px;color:#854f0b;">Risque coupure électrique ce soir 18h–22h. Priorité absolue aux produits sous réfrigération. Recommandation : écouler frais critiques avant 17h30 avec promotion flash.</div>
+      </div>
+    </div>
+
+    <!-- ══════════════ COMMANDES ══════════════ -->
+    <div class="section animate-in" id="section-commandes">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Commandes suggérées par l'IA</span>
+          <span class="badge badge-blue">Optimisées CI</span>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <table class="data-table">
+            <thead>
+              <tr><th>Produit</th><th>Qté suggérée</th><th>Fournisseur</th><th>Délai</th><th>Raison IA</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Poisson fumé</strong></td><td>40 kg</td><td>Marché Yopougon</td><td>48h</td>
+                <td>Rupture totale</td>
+                <td><button class="btn-upload" style="padding:4px 10px;font-size:11px;">Commander</button></td>
+              </tr>
+              <tr>
+                <td><strong>Banane plantain</strong></td><td>80 régimes</td><td>Fournisseur Bouaké</td><td>J+2</td>
+                <td>Stock critique · Pluies</td>
+                <td><button class="btn-upload" style="padding:4px 10px;font-size:11px;">Commander</button></td>
+              </tr>
+              <tr>
+                <td><strong>Manioc</strong></td><td>50 kg</td><td>Local Adjamé</td><td>24h</td>
+                <td>Faible · Saisonnier</td>
+                <td><button class="btn-upload" style="padding:4px 10px;font-size:11px;">Commander</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ RAPPORT CA ══════════════ -->
+    <div class="section animate-in" id="section-rapport">
+      <div style="margin-bottom:16px;">
+        <div class="report-header">
+          <div>
+            <div class="report-header-title">Fiche CA Journalier — PROSUMA Abidjan</div>
+            <div class="report-header-sub">Samedi 19 avril 2026 · Chef de rayon : Aya Kouassi</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="report-header-val">2 412 500 FCFA</div>
+            <div class="report-header-obj">Objectif : 2 800 000 FCFA · 87%</div>
+          </div>
+        </div>
+        <div class="report-body">
+          <div class="report-section">Synthèse par famille</div>
+          <table class="data-table">
+            <thead><tr><th>Famille</th><th>CA (FCFA)</th><th>% Objectif</th><th>Démarque</th><th>Taux dém.</th></tr></thead>
+            <tbody>
+              <tr><td>Épicerie sèche</td><td>680 000</td><td><span class="badge badge-green">102%</span></td><td>12 400</td><td>1,8%</td></tr>
+              <tr><td>Produits frais</td><td>420 000</td><td><span class="badge badge-red">75%</span></td><td>38 200</td><td>9,1%</td></tr>
+              <tr><td>Boucherie</td><td>310 000</td><td><span class="badge badge-yellow">88%</span></td><td>22 000</td><td>7,1%</td></tr>
+              <tr><td>Boissons</td><td>390 000</td><td><span class="badge badge-green">98%</span></td><td>5 800</td><td>1,5%</td></tr>
+              <tr><td>Prod. locaux</td><td>180 000</td><td><span class="badge badge-red">64%</span></td><td>14 500</td><td>8,1%</td></tr>
+              <tr><td>Hygiène / Beauté</td><td>280 000</td><td><span class="badge badge-green">112%</span></td><td>3 200</td><td>1,1%</td></tr>
+              <tr><td>Crémerie</td><td>152 500</td><td><span class="badge badge-yellow">81%</span></td><td>18 000</td><td>11,8%</td></tr>
+            </tbody>
+          </table>
+
+          <div class="report-section">Démarque consolidée</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+            <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:12px;">
+              <div style="font-size:11px;color:var(--text3);">Démarque connue</div>
+              <div style="font-size:20px;font-weight:700;color:var(--text);">64 800 FCFA</div>
+              <div style="font-size:11px;color:var(--text3);">2,7% du CA</div>
+            </div>
+            <div style="background:var(--red-light);border-radius:var(--radius-sm);padding:12px;">
+              <div style="font-size:11px;color:#a32d2d;">Démarque inconnue</div>
+              <div style="font-size:20px;font-weight:700;color:var(--red);">49 300 FCFA</div>
+              <div style="font-size:11px;color:#a32d2d;">2,0% du CA · À surveiller</div>
+            </div>
+          </div>
+
+          <div id="wa-section" style="display:none;">
+            <div class="report-section">Message WhatsApp — Directeur de magasin</div>
+            <div class="wa-box">
+              <div style="font-weight:600;margin-bottom:6px;">PROSUMA — Fiche CA · Samedi 19 avr. 2026</div>
+              <div>Chef de rayon : Aya Kouassi</div>
+              <div>────────────────────────</div>
+              <div>💰 CA du jour : <strong>2 412 500 FCFA</strong> (87% objectif)</div>
+              <div>🚨 Ruptures : 7 produits (dont 3 frais)</div>
+              <div>⚠️ DLC critiques : 5 références urgentes</div>
+              <div>📉 Démarque totale : 114 100 FCFA (4,7%)</div>
+              <div>────────────────────────</div>
+              <div>✅ Actions IA en cours :</div>
+              <div>• Commande poisson fumé + plantain J+1</div>
+              <div>• Promo -30% yaourt Sania (DLC J+2)</div>
+              <div>• Délestage 18h → vider frais avant 17h30</div>
+              <div>────────────────────────</div>
+              <div style="font-size:10px;color:#2d7a15;">Généré par Rayon Smart Flow · Claude · PROSUMA</div>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-upload" onclick="sendReport()">Envoyer au directeur</button>
+            <button class="btn-yellow" onclick="showWA()">Aperçu WhatsApp</button>
+            <button class="btn-ghost">Exporter PDF</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ DÉMARQUE ══════════════ -->
+    <div class="section animate-in" id="section-demarque">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Suivi démarque — Avril 2026</span>
+          <span class="badge badge-yellow">Objectif 3,5%</span>
+        </div>
+        <div class="card-body">
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;">
+            <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:14px;text-align:center;">
+              <div style="font-size:11px;color:var(--text3);">Connue</div>
+              <div style="font-size:22px;font-weight:700;color:var(--text);">2,7%</div>
+            </div>
+            <div style="background:var(--red-light);border-radius:var(--radius-sm);padding:14px;text-align:center;">
+              <div style="font-size:11px;color:#a32d2d;">Inconnue</div>
+              <div style="font-size:22px;font-weight:700;color:var(--red);">2,0%</div>
+            </div>
+            <div style="background:var(--orange-light);border-radius:var(--radius-sm);padding:14px;text-align:center;">
+              <div style="font-size:11px;color:#7a4800;">Total</div>
+              <div style="font-size:22px;font-weight:700;color:var(--orange);">4,7%</div>
+            </div>
+          </div>
+          <div style="padding:10px;background:var(--red-light);border-radius:var(--radius-sm);border-left:3px solid var(--red);">
+            <div style="font-size:12px;font-weight:600;color:#a32d2d;">Au-dessus de l'objectif (3,5%)</div>
+            <div style="font-size:11px;color:#a32d2d;margin-top:2px;">La crémerie est la famille la plus impactée (11,8%). Recommandation : audit DLC hebdomadaire.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ AGENT IA ══════════════ -->
+    <div class="section animate-in" id="section-agent">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Agent IA — Claude (Anthropic)</span>
+          <span class="badge badge-blue">Connecté</span>
+        </div>
+        <div class="card-body">
+          <div class="chat-area" id="chat-area">
+            <div class="chat-msg">
+              <div class="chat-from">Rayon Smart Flow</div>
+              <div class="chat-bubble bubble-bot">Bonjour Aya ! Je suis votre assistant IA. Je peux analyser vos stocks, détecter les DLC critiques, générer des commandes optimisées ou préparer votre fiche CA. Comment puis-je vous aider aujourd'hui ?</div>
+            </div>
+          </div>
+          <div class="chat-row">
+            <input class="chat-input-box" id="chat-input" type="text" placeholder="Ex : Quels produits sont en rupture ?" onkeydown="if(event.key==='Enter')sendChat()" />
+            <button class="btn-send" onclick="sendChat()">Envoyer ↗</button>
+          </div>
+          <div class="quick-btns">
+            <button class="qbtn" onclick="quickChat('Quels produits risquent de périmer cette semaine ?')">Périmer cette semaine</button>
+            <button class="qbtn" onclick="quickChat('Génère la commande optimisée pour demain')">Commande optimisée</button>
+            <button class="qbtn" onclick="quickChat('Taux de démarque ce mois ?')">Taux démarque</button>
+            <button class="qbtn" onclick="quickChat('Risque délestage ce soir ?')">Risque délestage</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+var sectionTitles = {
+  dashboard: 'Tableau de bord',
+  inventaire: 'Inventaire & IA',
+  alertes: 'Alertes DLC',
+  commandes: 'Commandes',
+  rapport: 'Fiche CA journalier',
+  demarque: 'Démarque',
+  agent: 'Agent Claude IA'
+};
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('active'); });
+  document.querySelectorAll('.nav-item').forEach(function(n){ n.classList.remove('active'); });
+  document.querySelectorAll('.mobile-btn').forEach(function(b){ b.classList.remove('active'); });
+
+  var sec = document.getElementById('section-' + id);
+  if (sec) {
+    sec.classList.add('active');
+    void sec.offsetWidth;
+    sec.style.animation = 'none';
+    setTimeout(function(){ sec.style.animation = ''; sec.classList.add('animate-in'); }, 10);
+  }
+
+  document.querySelectorAll('.nav-item').forEach(function(n){
+    if (n.getAttribute('onclick') && n.getAttribute('onclick').indexOf("'" + id + "'") > -1) n.classList.add('active');
+  });
+  document.querySelectorAll('.mobile-btn').forEach(function(b){
+    if (b.getAttribute('onclick') && b.getAttribute('onclick').indexOf("'" + id + "'") > -1) b.classList.add('active');
+  });
+
+  document.getElementById('page-title').textContent = sectionTitles[id] || id;
+}
+
+function simulateImport() {
+  var s = document.getElementById('import-status');
+  s.style.display = 'block';
+  setTimeout(function(){
+    s.innerHTML = '<div style="padding:10px;background:var(--green-light);border-radius:8px;font-size:12px;color:var(--green-dark);">✓ Inventaire analysé — 7 références traitées. 3 ruptures détectées, 5 DLC à risque.</div>';
+    addBot('Inventaire importé avec succès ! J\'ai analysé 7 références. Rupture critique : Poisson fumé. DLC urgentes : Poulet entier (J+1), Tilapia (J+1), Yaourt Sania (J+2). Voulez-vous que je génère la commande optimisée pour demain ?');
+    showSection('agent');
+  }, 2000);
+}
+
+var responses = {
+  'périm': 'Cette semaine, 5 références sont à risque de péremption : Poulet entier (J+1), Tilapia frais (J+1), Yaourt Sania (J+2), Lait pasteurisé (J+2), Fromage Kiri (J+3). Je recommande une promotion flash sur les J+1 dès ce matin.',
+  'command': 'Commande optimisée pour demain (J+1) :\n• Poisson fumé : 40 kg — Marché Yopougon (rupture totale)\n• Banane plantain : 80 régimes — Fournisseur Bouaké (attention pluies prévues)\n• Manioc : 50 kg — Local Adjamé\nTotal estimé : 187 000 FCFA',
+  'démarque': 'Taux de démarque ce mois : 4,7% (objectif 3,5%). Connue : 2,7% (64 800 FCFA). Inconnue : 2,0% (49 300 FCFA). La crémerie est la plus impactée à 11,8% — audit DLC hebdomadaire recommandé.',
+  'délestage': 'Oui, risque de délestage ce soir entre 18h et 22h selon les données Côte d\'Ivoire Énergie. Recommandation : priorité absolue à l\'écoulement des produits réfrigérés avant 17h30. Promouvoir poulet, tilapia et yaourt avec -30% jusqu\'à 17h.',
+};
+
+function addBot(text) {
+  var area = document.getElementById('chat-area');
+  var d = document.createElement('div');
+  d.className = 'chat-msg';
+  d.innerHTML = '<div class="chat-from">Rayon Smart Flow</div><div class="chat-bubble bubble-bot">' + text.replace(/\n/g,'<br>') + '</div>';
+  area.appendChild(d);
+  area.scrollTop = area.scrollHeight;
+}
+
+function addUser(text) {
+  var area = document.getElementById('chat-area');
+  var d = document.createElement('div');
+  d.className = 'chat-msg user';
+  d.innerHTML = '<div class="chat-bubble bubble-user">' + text + '</div>';
+  area.appendChild(d);
+  area.scrollTop = area.scrollHeight;
+}
+
+function sendChat() {
+  var inp = document.getElementById('chat-input');
+  var val = inp.value.trim();
+  if (!val) return;
+  addUser(val);
+  inp.value = '';
+  setTimeout(function(){
+    var lower = val.toLowerCase();
+    var resp = 'Je traite votre demande. Pour une analyse complète, importez d\'abord votre inventaire du jour via l\'onglet Inventaire & IA.';
+    for (var k in responses) {
+      if (lower.indexOf(k) > -1) { resp = responses[k]; break; }
+    }
+    addBot(resp);
+  }, 700);
+}
+
+function quickChat(msg) {
+  document.getElementById('chat-input').value = msg;
+  sendChat();
+}
+
+function showWA() {
+  var wa = document.getElementById('wa-section');
+  wa.style.display = wa.style.display === 'none' ? 'block' : 'none';
+}
+
+function sendReport() {
+  var btn = event.target;
+  btn.textContent = '✓ Envoyé au directeur';
+  btn.style.background = '#3b6d11';
+  setTimeout(function(){ btn.textContent = 'Envoyer au directeur'; btn.style.background = ''; }, 3000);
+}
+</script>
+
+</body>
+</html>
